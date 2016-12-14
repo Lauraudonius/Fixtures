@@ -28,11 +28,12 @@ public class LeagueActivity extends ListActivity {
         }
         TextView textView = (TextView)findViewById(R.id.textView2);
         textView.setText(name);
-        final String[] parts = html.split("\"page-nav__select-option\"");
-        List<String> list1 = getAllThingsBetween("value", "</option>", html);
+        final List<String> listURLs = new ArrayList<>();
+        List<String> list1 = getAllThingsBetween("value=\"", "</option>", html);
         final List<String> list = new ArrayList<>();
         for(int i = 0;i < list1.size();i++){
-            String[] parts1 = list1.get(i).split(">");
+            String[] parts1 = list1.get(i).split("\">");
+            listURLs.add(parts1[0]);
             list.add(parts1[1]);
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getListView().getContext(), android.R.layout.simple_list_item_1, list);
@@ -41,7 +42,8 @@ public class LeagueActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
                 Intent i = new Intent(getApplicationContext(), TeamActivity.class);
-                i.putExtra("TeamName", list.get(position));
+                i.putExtra("TeamName", listURLs.get(position));
+                i.putExtra("RealName", list.get(position));
                 startActivity(i);
             }
         });

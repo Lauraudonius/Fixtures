@@ -34,4 +34,7 @@ public class HTMLParser {
     public Elements getSeparateTeamContent(){
         return result.select("div.matches-block__match-list");
     }
+    public Elements getLeaguesContent(){
+        return result.select("div.grid__col.site-layout-secondary__col1");
+    }
 }

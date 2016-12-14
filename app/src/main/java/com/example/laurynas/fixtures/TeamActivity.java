@@ -23,17 +23,17 @@ public class TeamActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
-        String name="";
+        String name="", realName = "";
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
             name = extras.getString("TeamName");
+            realName = extras.getString("RealName");
         }
         TextView textView = (TextView) findViewById(R.id.textView2);
-        textView.setText(name);
-        name = changeName(name);
+        textView.setText(realName);
         HTMLParser parser = null;
         try {
-            parser = new HTMLoadTask().execute("http://www.skysports.com/football/teams/" + name).get();
+            parser = new HTMLoadTask().execute("http://www.skysports.com/football/teams" + name).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -94,12 +94,6 @@ public class TeamActivity extends ListActivity {
             if(textInBetween.length() <= 50)stringList.add(textInBetween);
         }
         return stringList;
-    }
-    public String changeName(String oldName){
-        oldName  = oldName.toLowerCase();
-        oldName  = oldName.replace("saint", "st");
-        oldName  = oldName.replace(" ", "-");
-        return oldName;
     }
 
 
