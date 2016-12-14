@@ -47,7 +47,7 @@ public class GamesActivity extends ListActivity {
                 startActivity(i);
             }
         });
-        String[] arrayListGamesFullOnHTML = html.split("<li class=\"matches__list-item\">");
+        String[] arrayListGamesFullOnHTML = html.split("fixres__item");
 
         List<String> arrayListTeams = getAllThingsBetween("<span class=\"swap-text__target\">", "</span>", html);
         List<String> arrayListScores = getAllThingsBetween("<span class=\"matches__teamscores-side\">", "</span>", html);
@@ -101,85 +101,30 @@ public class GamesActivity extends ListActivity {
                 }else{
                     if(scores.size() == 2) {
                         game.setTime("(Full Time) ");
-                    }else{
+                    }else {
                         game.setTime("");
                     }
                 }
             }
-            if(scores.size() == 2 && compareDatesAndTimes(date1, date) != '<'){
+            if(scores.size() == 2 && compareDatesAndTimes(date, date1) == '<'){
                 game.setResult(scores.get(0) + "-" + scores.get(1));
             }else{
                 game.setResult(" - ");
+            }
+            if(times.size() != 0){
+                if(scores.size() == 2 && compareDatesAndTimes(date, date1) == '='){
+                    if(isBigger(time, times.get(0))){
+                        game.setResult(scores.get(0) + "-" + scores.get(1));
+                    }
+                }
+            }else if(scores.size() == 2 && compareDatesAndTimes(date, date1) == '='){
+                game.setResult(scores.get(0) + "-" + scores.get(1));
             }
             temp = game.getTime() + game.getTeam1() + game.getResult() + game.getTeam2();
             arrayListGames.add(temp);
 
 
         }
-        /*for(int i = 0;i < arrayListTeams.size()/2;i++){
-            SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
-            Date currentDate_1 = new Date();
-            String date1 = formatter1.format(currentDate_1);
-            if(date.replace('-', '/').equals(date1)) {
-                //System.out.println("True, date = " + date +", date1 = " + date1);
-
-                if (arrayListScores.size() > 2 * i) {
-                    if (arrayListScores.size() / 2 - arrayListTimes.size() <= i) {
-                        if (isBigger(time, arrayListTimes.get(i + arrayListTimes.size() - arrayListScores.size() / 2))) {
-                            if (liveNow(time, arrayListTimes.get(i + arrayListTimes.size() - arrayListScores.size() / 2))) {
-                                temp = "(Live) " + arrayListTimes.get(i + arrayListTimes.size() - arrayListScores.size() / 2) + " " + arrayListTeams.get(i * 2) + " " + arrayListScores.get(2 * i) + "-" + arrayListScores.get((i * 2) + 1) + " " + arrayListTeams.get((i * 2) + 1);
-                            }
-                        } else
-                            temp = arrayListTimes.get(i + arrayListTimes.size() - arrayListScores.size() / 2) + " " + arrayListTeams.get(i * 2) + " - " + arrayListTeams.get((i * 2) + 1);
-                    } else
-                        temp = "(Full Time) " + arrayListTeams.get(i * 2) + " " + arrayListScores.get(2 * i) + "-" + arrayListScores.get((i * 2) + 1) + " " + arrayListTeams.get((i * 2) + 1);
-                } else if (arrayListScores.size() / 2 - arrayListTimes.size() <= i) {
-                    if (isBigger(time, arrayListTimes.get(i))) {
-                        if (liveNow(time, arrayListTimes.get(i))) {
-                            temp = "(Live) " + arrayListTimes.get(i) + " " + arrayListTeams.get(i * 2) + " - " + arrayListTeams.get((i * 2) + 1);
-                        } else
-                            temp = "(Full Time) " + arrayListTimes.get(i) + arrayListTeams.get(i * 2) + " - " + arrayListTeams.get((i * 2) + 1);
-                    } else
-                        temp = arrayListTeams.get(i * 2) + " " + arrayListTimes.get(i) + " " + arrayListTeams.get((i * 2) + 1);
-                } else
-                    temp = arrayListTeams.get(i * 2) + " " + "0-0" + " " + arrayListTeams.get((i * 2) + 1);
-            }else{
-                //System.out.println("False, date = " + date +", date1 = " + date1);
-                if (arrayListScores.size() > 2 * i) {
-                    if (arrayListScores.size() / 2 - arrayListTimes.size() <= i) {
-                        if (isBigger(time, arrayListTimes.get(i + arrayListTimes.size() - arrayListScores.size() / 2))) {
-                            if (liveNow(time, arrayListTimes.get(i + arrayListTimes.size() - arrayListScores.size() / 2))) {
-                                temp = arrayListTimes.get(i + arrayListTimes.size() - arrayListScores.size() / 2) + " " + arrayListTeams.get(i * 2) + " " + arrayListScores.get(2 * i) + "-" + arrayListScores.get((i * 2) + 1) + " " + arrayListTeams.get((i * 2) + 1);
-                            }
-                        } else
-                            temp = arrayListTimes.get(i + arrayListTimes.size() - arrayListScores.size() / 2) + " " + arrayListTeams.get(i * 2) + " - " + arrayListTeams.get((i * 2) + 1);
-                    } else
-                        temp = "(Full Time) " + arrayListTeams.get(i * 2) + " " + arrayListScores.get(2 * i) + "-" + arrayListScores.get((i * 2) + 1) + " " + arrayListTeams.get((i * 2) + 1);
-                } else if (arrayListScores.size() / 2 - arrayListTimes.size() <= i) {
-                    System.out.println(i);
-                    if (isBigger(time, arrayListTimes.get(i))) {
-                        if (liveNow(time, arrayListTimes.get(i))) {
-                            temp = arrayListTimes.get(i) + " " + arrayListTeams.get(i * 2) + " - " + arrayListTeams.get((i * 2) + 1);
-                        } else
-                            temp =arrayListTimes.get(i) + " " + arrayListTeams.get(i * 2) + " - " + arrayListTeams.get((i * 2) + 1);
-                    } else
-                        temp = arrayListTimes.get(i) + " " + arrayListTeams.get(i * 2) + " - " + arrayListTeams.get((i * 2) + 1);
-                } else
-                    temp = arrayListTeams.get(i * 2) + " " + "0-0" + " " + arrayListTeams.get((i * 2) + 1);
-            }
-
-            if(arrayListScores.size() > 2*i){
-                if((arrayListScores.size()/2 - arrayListTimes.size()) <= i){
-                    if(isBigger(time, arrayListTimes.get(i))){
-                        if(liveNow(time, arrayListTimes.get(i))){
-                            temp = "(Live) " + arrayListTimes.get(i) + " " + arrayListTeams.get(i * 2) + " " + arrayListScores.get(2 * i) + ":" + arrayListScores.get((i * 2) + 1) + " " + arrayListTeams.get((i * 2) + 1);
-                        }else temp = "(Full Time) " + arrayListTimes.get(i) + " " + arrayListTeams.get(i * 2) + " " + arrayListScores.get(2 * i) + ":" + arrayListScores.get((i * 2) + 1) + " " + arrayListTeams.get((i * 2) + 1);
-                    }else temp = arrayListTeams.get(i * 2) + " " + arrayListTimes.get(i) + " " + arrayListTeams.get((i * 2) + 1);
-                }else temp = arrayListTeams.get(i * 2) + " " + arrayListTimes.get(i) + " " + arrayListTeams.get((i * 2) + 1);
-            }else temp = arrayListTeams.get(i * 2) + " "  + "0:0" + " " + arrayListTeams.get((i * 2) + 1);
-
-            arrayListGames.add(temp);
-        }*/
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getListView().getContext(), android.R.layout.simple_list_item_1, arrayListGames);
         getListView().setAdapter(adapter);
     }

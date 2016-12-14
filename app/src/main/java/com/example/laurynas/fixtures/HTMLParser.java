@@ -26,6 +26,12 @@ public class HTMLParser {
     }
 
     public Elements getContent() {
+        return result.select("div.fixres.matches-block--large");
+    }
+    public Elements getSeparateTeamsContent(){
+        return result.select("div.page-nav__body");
+    }
+    public Elements getSeparateTeamContent(){
         return result.select("div.matches-block__match-list");
     }
 }

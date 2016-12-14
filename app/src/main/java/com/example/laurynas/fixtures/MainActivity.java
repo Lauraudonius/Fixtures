@@ -8,9 +8,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.jsoup.select.Elements;
@@ -39,18 +43,20 @@ public class MainActivity extends ListActivity {
         Date currentDate_1 = new Date();
         String date = formatter.format(currentDate_1);
         String html, oldDate;
-        //TextView textView = (TextView) findViewById(R.id.textView);
-        //textView.setText("Loading today's fixtures & results");
+        TextView textView = (TextView) findViewById(R.id.textView3);
+        textView.setText("");
         if(isNetworkAvailable(getApplicationContext())) {
             HTMLParser parser = null;
             try {
-                parser = new HTMLoadTask().execute("http://www.skysports.com/football/fixtures-results").get();
+                parser = new HTMLoadTask().execute("http://www.skysports.com/football/fixtures").get();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-            html = getHTML(parser);
+            html = getHTML(parser);/*
+            Toast.makeText(getApplicationContext(), html, Toast.LENGTH_SHORT).show();
+            System.out.print(html);*/
             writeToFile(date + "\n" + html, getApplicationContext());
         }else{
             Button b1 = (Button) findViewById(R.id.button);
@@ -59,16 +65,27 @@ public class MainActivity extends ListActivity {
             b1.setVisibility(View.GONE);
             b2.setVisibility(View.GONE);
             b3.setVisibility(View.GONE);
+            b1 = (Button)findViewById(R.id.button5);
+            b1.setVisibility(View.GONE);
+            TextView tv = (TextView)findViewById(R.id.textView3);
+            tv.setVisibility(View.GONE);
             html = readFromFile(getApplicationContext());
+            RelativeLayout.LayoutParams pr = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            pr.addRule(RelativeLayout.BELOW, R.id.imageView);
+            getListView().setLayoutParams(pr);
             String[] p = html.split("/");
             oldDate = p[0] + "/" + p[1] + "/" + p[2].charAt(0) + p[2].charAt(1) +  p[2].charAt(2) + p[2].charAt(3);
             Toast.makeText(getApplicationContext(), "No internet connection, using data from last login, that was on " + oldDate, Toast.LENGTH_SHORT).show();
         }
+        //loadedScreen();
 
 
 
-        final String[] leagues = html.split("<h4");
-        final List<String> arrayList = getAllThingsBetween("<h4 class=\"matches__group-header\">", "</h4>", html);
+        final String[] leagues = html.split("<h5");
+        Toast.makeText(getApplicationContext(), String.valueOf(leagues.length), Toast.LENGTH_LONG).show();
+        final List<String> arrayList = getAllThingsBetween("class=\"fixres__header3\">", "</h5>", html);
         //textView.setVisibility(View.GONE);
         getListView().setVisibility(View.VISIBLE);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getListView().getContext(), android.R.layout.simple_list_item_1, arrayList);
@@ -134,6 +151,10 @@ public class MainActivity extends ListActivity {
         i.putExtra("Date", String.valueOf(day) + "-" + String.valueOf(month) + "-" + String.valueOf(year));
         startActivity(i);
 
+    }
+    public void toSeparateFixtures(View view){
+        Intent i = new Intent(getApplicationContext(), LeaguesActivity.class);
+        startActivity(i);
     }
     public boolean isChangedYear(int day, int m){
         if((day  == 1 && m == 1) || (day == 31 && m == 12)){
@@ -248,21 +269,39 @@ public class MainActivity extends ListActivity {
 
         return ret;
     }
+
+    void loadedScreen(){
+        getListView().setVisibility(View.VISIBLE);
+        Button button1 = (Button) findViewById(R.id.button);
+        button1.setVisibility(View.VISIBLE);
+        button1 = (Button) findViewById(R.id.button2);
+        button1.setVisibility(View.VISIBLE);
+        button1 = (Button) findViewById(R.id.button3);
+        button1.setVisibility(View.VISIBLE);
+        TextView textView = (TextView)findViewById(R.id.textView3);
+        textView.setText("");
+    }
     class HTMLoadTask extends AsyncTask<String, Void, HTMLParser> {
         public  int a = 1;
-        /*TextView textView = (TextView) findViewById(R.id.textView);
-        String str = "Loading today's fixtures & results";
-        public void SetText(){
-
-            textView.setText(str);
-        }*/
-        void setGone(){
+        @Override
+        protected void onPreExecute(){
+            //loadingScreen();
+        }
+        void loadingScreen(){
+            ImageView imageView = (ImageView)findViewById(R.id.imageView);
+            imageView.setVisibility(View.VISIBLE);
             getListView().setVisibility(View.GONE);
+            Button button1 = (Button) findViewById(R.id.button);
+            button1.setVisibility(View.GONE);
+            button1 = (Button) findViewById(R.id.button2);
+            button1.setVisibility(View.GONE);
+            button1 = (Button) findViewById(R.id.button3);
+            button1.setVisibility(View.GONE);
+            TextView textView = (TextView)findViewById(R.id.textView3);
+            textView.setText("Loading results & Fixtures");
         }
         @Override
         protected HTMLParser doInBackground(String... urls) {
-            setGone();
-            //SetText();
             HTMLParser parser = new HTMLParser();
             parser.load(urls[0]);
 

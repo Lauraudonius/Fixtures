@@ -59,8 +59,8 @@ public class DayActivity extends ListActivity {
             html = getHTML(parser);
 
 
-        final String[] leagues = html.split("<h4");
-        final List<String> arrayList = getAllThingsBetween("<h4 class=\"matches__group-header\">", "</h4>", html);
+        final String[] leagues = html.split("<h5");
+        final List<String> arrayList = getAllThingsBetween("<h5 class=\"fixres__header3\">", "</h5>", html);
         //textView.setVisibility(View.GONE);
         getListView().setVisibility(View.VISIBLE);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getListView().getContext(), android.R.layout.simple_list_item_1, arrayList);

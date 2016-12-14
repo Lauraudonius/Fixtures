@@ -9,4 +9,7 @@
     <string name="date_view_set">The Date is: </string>
     <string name="date_selected"></string>
     <string name="title_activity_day">DayActivity</string>
+    <string name="title_activity_leagues">LeaguesActivity</string>
+    <string name="title_activity_league">LeagueActivity</string>
+    <string name="title_activity_team">Team</string>
 </resources>
