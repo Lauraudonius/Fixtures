@@ -11,12 +11,21 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.laurynas.fixtures.MainActivity"
     tools:showIn="@layout/activity_main">
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="#414db7"
+        android:minHeight="50dp" />
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button5"
+        android:layout_below="@+id/spinner"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"></ListView>
 
@@ -27,44 +36,7 @@
         android:src="@drawable/logo"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="20dp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Yesterday&apos;s results"
-        android:id="@+id/button"
-        android:textSize="15dp"
-        android:nestedScrollingEnabled="false"
-        android:minWidth="200dp"
-        android:onClick="toYesterday"
-        android:layout_alignBottom="@+id/textView3"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tomorrow&apos;s fixtures"
-        android:id="@+id/button2"
-        android:textSize="15dp"
-        android:layout_below="@+id/button"
-        android:layout_alignLeft="@+id/button"
-        android:layout_alignStart="@+id/button"
-        android:minWidth="200dp"
-        android:onClick="toTomorrow" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Any other day&apos;s results"
-        android:id="@+id/button3"
-        android:layout_alignTop="@+id/button"
-        android:layout_toRightOf="@+id/button"
-        android:layout_toEndOf="@+id/button"
-        android:layout_alignBottom="@+id/button2"
-        android:onClick="toDate" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -75,19 +47,5 @@
         android:layout_below="@id/imageView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Separate teams&apos; fixtures"
-        android:id="@+id/button5"
-        android:textSize="15dp"
-        android:minWidth="200dp"
-        android:onClick="toSeparateFixtures"
-        android:layout_below="@+id/button2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@android:id/list"
-        android:layout_alignEnd="@android:id/list" />
 
 </RelativeLayout>

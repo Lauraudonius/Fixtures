@@ -11,9 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +32,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends ListActivity implements AdapterView.OnItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +44,13 @@ public class MainActivity extends ListActivity {
         String html, oldDate;
         TextView textView = (TextView) findViewById(R.id.textView3);
         textView.setText("");
+
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.spinner_array, android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+        spinner.setOnItemSelectedListener(this);
         if(isNetworkAvailable(getApplicationContext())) {
             HTMLParser parser = null;
             try {
@@ -59,14 +65,7 @@ public class MainActivity extends ListActivity {
             System.out.print(html);*/
             writeToFile(date + "\n" + html, getApplicationContext());
         }else{
-            Button b1 = (Button) findViewById(R.id.button);
-            Button b2 = (Button) findViewById(R.id.button2);
-            Button b3 = (Button) findViewById(R.id.button3);
-            b1.setVisibility(View.GONE);
-            b2.setVisibility(View.GONE);
-            b3.setVisibility(View.GONE);
-            b1 = (Button)findViewById(R.id.button5);
-            b1.setVisibility(View.GONE);
+            spinner.setVisibility(View.GONE);
             TextView tv = (TextView)findViewById(R.id.textView3);
             tv.setVisibility(View.GONE);
             html = readFromFile(getApplicationContext());
@@ -79,12 +78,10 @@ public class MainActivity extends ListActivity {
             oldDate = p[0] + "/" + p[1] + "/" + p[2].charAt(0) + p[2].charAt(1) +  p[2].charAt(2) + p[2].charAt(3);
             Toast.makeText(getApplicationContext(), "No internet connection, using data from last login, that was on " + oldDate, Toast.LENGTH_SHORT).show();
         }
-        //loadedScreen();
 
 
 
         final String[] leagues = html.split("<h5");
-        Toast.makeText(getApplicationContext(), String.valueOf(leagues.length), Toast.LENGTH_LONG).show();
         final List<String> arrayList = getAllThingsBetween("class=\"fixres__header3\">", "</h5>", html);
         //textView.setVisibility(View.GONE);
         getListView().setVisibility(View.VISIBLE);
@@ -105,12 +102,38 @@ public class MainActivity extends ListActivity {
         });
 
     }
+    public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
 
-    public void toDate(View view){
+        switch (position) {
+            case 0:
+                Toast.makeText(getApplicationContext(), "0", Toast.LENGTH_SHORT).show();
+                break;
+            case 1:
+                toYesterday();
+                break;
+            case 2:
+                toTomorrow();
+                break;
+            case 3:
+                toDate();
+                break;
+            case 4:
+                toSeparateFixtures();
+                break;
+        }
+
+    }
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        // TODO Auto-generated method stub
+    }
+
+
+    public void toDate(){
         Intent i = new Intent(getApplicationContext(), DateActivity.class);
         startActivity(i);
     }
-    public void toYesterday(View view){
+    public void toYesterday(){
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date currentDate_1 = new Date();
         String date = formatter.format(currentDate_1);
@@ -131,7 +154,7 @@ public class MainActivity extends ListActivity {
         i.putExtra("Date", String.valueOf(day) + "-" + String.valueOf(monthString) + "-" + String.valueOf(year));
         startActivity(i);
     }
-    public void toTomorrow(View view){
+    public void toTomorrow(){
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date currentDate_1 = new Date();
         String date = formatter.format(currentDate_1);
@@ -152,7 +175,7 @@ public class MainActivity extends ListActivity {
         startActivity(i);
 
     }
-    public void toSeparateFixtures(View view){
+    public void toSeparateFixtures(){
         Intent i = new Intent(getApplicationContext(), LeaguesActivity.class);
         startActivity(i);
     }
@@ -271,15 +294,11 @@ public class MainActivity extends ListActivity {
     }
 
     void loadedScreen(){
-        getListView().setVisibility(View.VISIBLE);
-        Button button1 = (Button) findViewById(R.id.button);
-        button1.setVisibility(View.VISIBLE);
-        button1 = (Button) findViewById(R.id.button2);
-        button1.setVisibility(View.VISIBLE);
-        button1 = (Button) findViewById(R.id.button3);
-        button1.setVisibility(View.VISIBLE);
         TextView textView = (TextView)findViewById(R.id.textView3);
         textView.setText("");
+    }
+
+
     }
     class HTMLoadTask extends AsyncTask<String, Void, HTMLParser> {
         public  int a = 1;
@@ -287,7 +306,7 @@ public class MainActivity extends ListActivity {
         protected void onPreExecute(){
             //loadingScreen();
         }
-        void loadingScreen(){
+        /*void loadingScreen(){
             ImageView imageView = (ImageView)findViewById(R.id.imageView);
             imageView.setVisibility(View.VISIBLE);
             getListView().setVisibility(View.GONE);
@@ -299,7 +318,7 @@ public class MainActivity extends ListActivity {
             button1.setVisibility(View.GONE);
             TextView textView = (TextView)findViewById(R.id.textView3);
             textView.setText("Loading results & Fixtures");
-        }
+        }*/
         @Override
         protected HTMLParser doInBackground(String... urls) {
             HTMLParser parser = new HTMLParser();
@@ -309,4 +328,3 @@ public class MainActivity extends ListActivity {
         }
 
     }
-}

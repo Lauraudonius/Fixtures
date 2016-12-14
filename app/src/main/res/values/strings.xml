@@ -12,4 +12,11 @@
     <string name="title_activity_leagues">LeaguesActivity</string>
     <string name="title_activity_league">LeagueActivity</string>
     <string name="title_activity_team">Team</string>
+    <string-array name="spinner_array">
+        <item>Today\'s fixtures &amp; results</item>
+        <item>Yesterday\'s results</item>
+        <item>Tomorrow\'s fixtures</item>
+        <item>Any other day\'s results</item>
+        <item>Separate team\'s fixtures</item>
+    </string-array>
 </resources>
