@@ -54,6 +54,10 @@
         <activity
             android:name=".LeagueTablesActivity"
             android:label="@string/title_activity_league_tables"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".LeagueTableActivity"
+            android:label="@string/title_activity_league_table"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

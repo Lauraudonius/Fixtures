@@ -21,4 +21,5 @@
         <item>Leagues\' tables</item>
     </string-array>
     <string name="title_activity_league_tables">LeagueTablesActivity</string>
+    <string name="title_activity_league_table">LeagueTableActivity</string>
 </resources>

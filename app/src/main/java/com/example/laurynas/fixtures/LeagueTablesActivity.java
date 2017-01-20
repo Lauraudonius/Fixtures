@@ -1,12 +1,12 @@
 package com.example.laurynas.fixtures;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import org.jsoup.select.Elements;
 
@@ -39,10 +39,9 @@ public class LeagueTablesActivity extends ListActivity {
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
-                /*Intent i = new Intent(getApplicationContext(), TeamActivity.class);
-                i.putExtra("TeamName", leaguesUrlList.get(position));
-                startActivity(i);*/
-                Toast.makeText(getApplicationContext(), leaguesUrlList.get(position), Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getApplicationContext(), LeagueTableActivity.class);
+                i.putExtra("LeagueName", leaguesUrlList.get(position));
+                startActivity(i);
             }
         });
     }
