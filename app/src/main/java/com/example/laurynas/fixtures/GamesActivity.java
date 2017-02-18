@@ -1,17 +1,29 @@
 package com.example.laurynas.fixtures;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.sql.Time;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,6 +35,7 @@ public class GamesActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_games);
+        //addReminderInCalendar();
         String html="";
         String name="";
         Bundle extras = getIntent().getExtras();
@@ -31,13 +44,15 @@ public class GamesActivity extends ListActivity {
             name = extras.getString("LeagueName");
             date = extras.getString("Date");
         }
+        final String dateForReminding = date;
         date.replace("-", "/");
+        final String trueName = name;
         setName(name);
 
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
         formatter.setTimeZone(TimeZone.getTimeZone("GMT+2"));
         Date currentTime_1 = new Date();
-        String time = formatter.format(currentTime_1);
+        final String time = formatter.format(currentTime_1);
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +76,8 @@ public class GamesActivity extends ListActivity {
         List<String> teams;
         List<String> scores;
         List<String> times;
-
+        final List<String> realTimes = new ArrayList<>();
+        final List<String> gameTitles = new ArrayList<>();
         for(int i = 1;i < arrayListGamesFullOnHTML.length;i++){
             SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
             Date currentDate_1 = new Date();
@@ -78,11 +94,14 @@ public class GamesActivity extends ListActivity {
             if(teams.size() == 2){
                 game.setTeam1(teams.get(0));
                 game.setTeam2(teams.get(1));
+                gameTitles.add(game.getTeam1() + " - " + game.getTeam2());
             }else{
                 game.setTeam1("Team1");
                 game.setTeam2("Team2");
             }
-
+            if(times.size() == 1){
+                realTimes.add(times.get(0));
+            }
             if(compareDatesAndTimes(date1, date) == '<'){
                 if(times.size() == 1) game.setTime(String.valueOf(times.get(0)) + " ");
                 else game.setTime(String.valueOf(times.get(0)) + " ");
@@ -91,6 +110,7 @@ public class GamesActivity extends ListActivity {
                 else game.setTime("(Full Time) ");
             }else{
                 if(times.size() == 1){
+                    realTimes.add(times.get(0));
                     if(!isBigger(time, times.get(0))){
                         game.setTime(String.valueOf(times.get(0)) + " ");
                     }else if(liveNow(time, times.get(0))){
@@ -127,8 +147,47 @@ public class GamesActivity extends ListActivity {
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getListView().getContext(), android.R.layout.simple_list_item_1, arrayListGames);
         getListView().setAdapter(adapter);
-    }
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View view, final int position, long arg3) {
+                SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
+                Date currentDate_1 = new Date();
+                String date1 = formatter1.format(currentDate_1);
+                if(!(compareDatesAndTimes(date1, date) == '>' || compareDatesAndTimes(date1, date) == '=' && isBigger(time, realTimes.get(position)))){
+                    new AlertDialog.Builder(GamesActivity.this)
+                            .setTitle("Set reminder")
+                            .setMessage("Do you want to be reminded about this game?")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    String title = gameTitles.get(position);
+                                    String description = trueName + "\n" + makeDateRight(dateForReminding) + " " + realTimes.get(position) + " " + title;
+                                    addCalendarEvent(makeDateRight(dateForReminding) + "-" + realTimes.get(position), title, description);
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert).show();
 
+                }else Toast.makeText(getApplicationContext(), "Noo", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    public String makeDateRight(String oldDate){
+        String[] parts = oldDate.split("-");
+        String year = parts[2];
+        String month = parts[1];
+        String day = parts[0];
+        if(day.length() == 1){
+            day = "0"+day;
+        }
+        if(month.length() == 1){
+            month = "0"+month;
+        }
+        return year + "-" + month + "-" + day;
+    }
     public char compareDatesAndTimes(String data1, String data2){
         data1 = data1.replace("-", "/");
         String[] parts1 = data1.split("/");
@@ -236,5 +295,84 @@ public class GamesActivity extends ListActivity {
             return true;
         }return false;
     }
+    /*public void onDateSelectedButtonClick(int year, int month, int day, int hour, int minutes){
+        Calendar c = Calendar.getInstance();
+        c.set(year, month, day);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        // Ask our service to set an alarm for that date, this activity talks to the client that talks to the service
+        scheduleClient.setAlarmForNotification(c);
+        // Notify the user what they just did
+        Toast.makeText(this, "Notification set for: "+ day +"/"+ (month+1) +"/"+ year, Toast.LENGTH_SHORT).show();
+    }*/
 
+    /** Adds Events and Reminders in Calendar. */
+    private void addReminderInCalendar() {
+        Calendar cal = Calendar.getInstance();
+        Uri EVENTS_URI = Uri.parse(getCalendarUriBase(true) + "events");
+        ContentResolver cr = getContentResolver();
+        TimeZone timeZone = TimeZone.getDefault();
+
+        /** Inserting an event in calendar. */
+        ContentValues values = new ContentValues();
+        values.put(CalendarContract.Events.CALENDAR_ID, 1);
+        values.put(CalendarContract.Events.TITLE, "Sanjeev Reminder 01");
+        values.put(CalendarContract.Events.DESCRIPTION, "A test Reminder.");
+        values.put(CalendarContract.Events.ALL_DAY, 0);
+        values.put(CalendarContract.Events.RDATE, "20170123");
+        // event starts at 11 minutes from now
+        values.put(CalendarContract.Events.DTSTART, cal.getTimeInMillis());
+        // ends 60 minutes from now
+        values.put(CalendarContract.Events.DTEND, cal.getTimeInMillis() + 2*60*60*1000);
+        values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
+        values.put(CalendarContract.Events.HAS_ALARM, 1);
+        Uri event = cr.insert(EVENTS_URI, values);
+
+        // Display event id.
+        Toast.makeText(getApplicationContext(), "Event added :: ID :: " + event.getLastPathSegment(), Toast.LENGTH_SHORT).show();
+
+        /** Adding reminder for event added. */
+        Uri REMINDERS_URI = Uri.parse(getCalendarUriBase(true) + "reminders");
+        values = new ContentValues();
+        values.put(CalendarContract.Reminders.EVENT_ID, Long.parseLong(event.getLastPathSegment()));
+        values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+        values.put(CalendarContract.Reminders.MINUTES, 10);
+        cr.insert(REMINDERS_URI, values);
+    }
+
+    /** Returns Calendar Base URI, supports both new and old OS. */
+    private String getCalendarUriBase(boolean eventUri) {
+        Uri calendarURI = null;
+        try {
+            if (android.os.Build.VERSION.SDK_INT <= 7) {
+                calendarURI = (eventUri) ? Uri.parse("content://calendar/") : Uri.parse("content://calendar/calendars");
+            } else {
+                calendarURI = (eventUri) ? Uri.parse("content://com.android.calendar/") : Uri
+                        .parse("content://com.android.calendar/calendars");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return calendarURI.toString();
+    }
+
+    public void addCalendarEvent(String date, String title, String description){
+        Date fulldate = null;
+        try {
+            fulldate = new SimpleDateFormat("yyyy-MM-dd-HH:mm").parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Intent calintent = new Intent(Intent.ACTION_EDIT);
+        calintent.setType("vnd.android.cursor.item/event");
+        calintent.putExtra("title", title);
+        calintent.putExtra("description", description);
+        calintent.putExtra("beginTime",  fulldate.getTime());
+        calintent.putExtra("endTime",fulldate.getTime()+ 30*60*1000);
+
+
+
+        startActivity(calintent);
+    }
 }
