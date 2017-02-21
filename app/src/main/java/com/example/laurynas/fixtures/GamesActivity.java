@@ -63,14 +63,10 @@ public class GamesActivity extends ListActivity {
             }
         });
         String[] arrayListGamesFullOnHTML = html.split("fixres__item");
-
+        final List<String> linkOfGamesList = getAllThingsBetween("<a href=\"", "\" class=\"matches__item matches__link\"", html);
         List<String> arrayListTeams = getAllThingsBetween("<span class=\"swap-text__target\">", "</span>", html);
         List<String> arrayListScores = getAllThingsBetween("<span class=\"matches__teamscores-side\">", "</span>", html);
-        List<String> arrayListTimes = getAllThingsBetween("<span class=\"matches__date\">","</span>", html);/*
-        Toast.makeText(getApplicationContext(), String.valueOf(arrayListTimes.size()), Toast.LENGTH_SHORT).show();*/
-        System.out.println("ArrayListScores size is " + arrayListScores.size()/2);
-        System.out.println("ArrayListTimes size is " + arrayListTimes.size());
-        //arrayListTimes = changeTime(arrayListTimes);
+        List<String> arrayListTimes = getAllThingsBetween("<span class=\"matches__date\">","</span>", html);
         List<String> arrayListGames = new ArrayList<String>();
         String temp = "";
         List<String> teams;
@@ -168,10 +164,20 @@ public class GamesActivity extends ListActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     // do nothing
                                 }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert).show();
+                            }).show();
 
-                }else Toast.makeText(getApplicationContext(), "Noo", Toast.LENGTH_SHORT).show();
+                }else {
+                    if(linkOfGamesList.size() > position) {
+                        Intent i = new Intent(getApplicationContext(), SeparateGameActivity.class);
+                        Toast.makeText(getApplicationContext(), linkOfGamesList.get(position), Toast.LENGTH_SHORT).show();
+                        i.putExtra("link", linkOfGamesList.get(position));
+                        String title = gameTitles.get(position);
+                        String description = trueName + "\n" + makeDateRight(dateForReminding) + " " + realTimes.get(position) + "\n" + title;
+                        i.putExtra("name", description);
+                        i.putExtra("teams", title);
+                        startActivity(i);
+                    }else Toast.makeText(getApplicationContext(), "Nothing about this game", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -257,7 +263,7 @@ public class GamesActivity extends ListActivity {
 
         while (matcher.find()) {
             String textInBetween = matcher.group(1);
-            if(textInBetween.length() <= 50)stringList.add(textInBetween);
+            if(textInBetween.length() <= 500)stringList.add(textInBetween);
         }
         return stringList;
     }

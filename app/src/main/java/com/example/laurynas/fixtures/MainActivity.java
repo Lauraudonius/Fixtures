@@ -123,6 +123,9 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemSele
             case 5:
                 toLeagues();
                 break;
+            case 6:
+                toTest();
+                break;
         }
 
     }
@@ -130,7 +133,10 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemSele
     public void onNothingSelected(AdapterView<?> parent) {
         // TODO Auto-generated method stub
     }
-
+    public void toTest(){
+        Intent i = new Intent(getApplicationContext(), SeparateGameActivity.class);
+        startActivity(i);
+    }
     public void toLeagues(){
         Intent i = new Intent(getApplicationContext(), LeagueTablesActivity.class);
         startActivity(i);
@@ -231,18 +237,11 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemSele
     }
 
     public String getHTML(HTMLParser htmlParser) {
-        String html;
+        String html = "";
         Elements content = htmlParser.getContent();
-        content.append("<style>table {width: 100%; background-color: #FEFEFE; color: #333333;} td {font-size: 12px;}<style>");
-
-        html =
-                "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" +
-                        "<html><head>" +
-                        "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />" +
-                        "<head><body><table>";
 
 
-        html += content.html().replaceAll("<a", "<span").replaceAll("<img", "<span") + "</body></html></table>";
+        html += content.html();
         return html;
     }
 

@@ -22,15 +22,15 @@
         android:layout_marginTop="20dp"></ListView>
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/textView2"
-        android:textSize="30dp"
-        android:layout_below="@+id/imageView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:text="Large Text"
+    android:id="@+id/textView2"
+    android:textSize="30dp"
+    android:layout_below="@+id/imageView"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true" />
 
     <ImageView
         android:layout_width="wrap_content"

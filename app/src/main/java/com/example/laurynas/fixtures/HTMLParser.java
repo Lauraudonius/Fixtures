@@ -37,4 +37,7 @@ public class HTMLParser {
     public Elements getLeaguesContent(){
         return result.select("div.grid__col.site-layout-secondary__col1");
     }
+    public Elements getSeparateGameContent(){
+        return result.select("div.match-head__switch-offset");
+    }
 }

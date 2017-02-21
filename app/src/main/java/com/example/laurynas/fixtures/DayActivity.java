@@ -194,7 +194,7 @@ public class DayActivity extends ListActivity {
                         "<head><body><table>";
 
 
-        html += content.html().replaceAll("<a", "<span").replaceAll("<img", "<span") + "</body></html></table>";
+        html += content.html();
         return html;
     }
     private List<String> getAllThingsBetween(String pat1, String pat2, String data){
