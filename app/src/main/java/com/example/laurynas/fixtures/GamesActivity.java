@@ -44,8 +44,8 @@ public class GamesActivity extends ListActivity {
             name = extras.getString("LeagueName");
             date = extras.getString("Date");
         }
-        final String dateForReminding = date;
-        date.replace("-", "/");
+        final String dateForReminding = date.replace("/", "-");
+        Toast.makeText(getApplicationContext(), date, Toast.LENGTH_SHORT).show();
         final String trueName = name;
         setName(name);
 
