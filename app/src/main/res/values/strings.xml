@@ -19,7 +19,6 @@
         <item>Any other day\'s results</item>
         <item>Separate team\'s fixtures</item>
         <item>Leagues\' tables</item>
-        <item>Test purposes</item>
     </string-array>
     <string name="title_activity_league_tables">LeagueTablesActivity</string>
     <string name="title_activity_league_table">LeagueTableActivity</string>

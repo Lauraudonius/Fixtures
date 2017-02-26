@@ -45,7 +45,7 @@ public class GamesActivity extends ListActivity {
             date = extras.getString("Date");
         }
         final String dateForReminding = date.replace("/", "-");
-        Toast.makeText(getApplicationContext(), date, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), date, Toast.LENGTH_SHORT).show();
         final String trueName = name;
         setName(name);
 
@@ -169,7 +169,7 @@ public class GamesActivity extends ListActivity {
                 }else {
                     if(linkOfGamesList.size() > position) {
                         Intent i = new Intent(getApplicationContext(), SeparateGameActivity.class);
-                        Toast.makeText(getApplicationContext(), linkOfGamesList.get(position), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), linkOfGamesList.get(position), Toast.LENGTH_SHORT).show();
                         i.putExtra("link", linkOfGamesList.get(position));
                         String title = gameTitles.get(position);
                         String description = trueName + "\n" + makeDateRight(dateForReminding) + " " + realTimes.get(position) + "\n" + title;

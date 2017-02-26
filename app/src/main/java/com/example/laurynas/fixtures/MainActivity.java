@@ -106,7 +106,6 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemSele
 
         switch (position) {
             case 0:
-                Toast.makeText(getApplicationContext(), "0", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
                 toYesterday();
@@ -122,9 +121,6 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemSele
                 break;
             case 5:
                 toLeagues();
-                break;
-            case 6:
-                toTest();
                 break;
         }
 
