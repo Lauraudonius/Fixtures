@@ -86,6 +86,7 @@ public class LeagueTableActivity extends ListActivity {
         stringList.remove(0);
         HTMLforASingleTeam = stringList.toArray(new String[0]);
         List<singleRow> singleRows = new ArrayList<>();
+        final List<String> lastMatches = new ArrayList<>();
         for(String s : HTMLforASingleTeam){
             System.out.println(s);
             String teamName = getAllThingsBetween("data-short-name=\"", "\" data-long-name=\"", s).get(0);
@@ -93,14 +94,30 @@ public class LeagueTableActivity extends ListActivity {
             List<String> placePoints = getAllThingsBetween("<td class=\"standing-table__cell\" data-sort-", "d>", s);
             String place = getAllThingsBetween("value=\"", "\">",placePoints.get(0)).get(0);
             String points = getAllThingsBetween("\">", "</t" , placePoints.get(0)).get(0);
+            String form = "";
+            for(String s1 : getAllThingsBetween("<span title=\"", "\" class=\"standing-table__form", s)){
+                form += s1 + "\n";
+            }
+            lastMatches.add(form);
             System.out.println(numbers.size());
             singleRow singleRow = new singleRow(formatString(place + ". " + teamName, 16), formatString(numbers.get(0), 3), formatString(numbers.get(1), 3), formatString(numbers.get(2), 3), formatString(points, 3));
             singleRows.add(singleRow);
         }
         singleRows.add(0, new singleRow(formatString("Team name", 16), " W ", " D ", " L ", "Pts" ));
-        singleRow[] singleRows1 = singleRows.toArray(new singleRow[0]);
+        final singleRow[] singleRows1 = singleRows.toArray(new singleRow[0]);
         yourAdapter adapter = new yourAdapter (getApplicationContext(), singleRows1);
         getListView().setAdapter(adapter);
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
+                if(position != 0) {
+                    Intent i = new Intent(getApplicationContext(), SeparateTeamFromTableActivivty.class);
+                    i.putExtra("TeamName", singleRows1[position].getName());
+                    i.putExtra("HTML", lastMatches.get(position - 1));
+                    startActivity(i);
+                }
+            }
+        });
     }
     class HTMLoadTask extends AsyncTask<String, Void, HTMLParser> {
         @Override

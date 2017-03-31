@@ -64,6 +64,10 @@
         <activity
             android:name=".SeparateGameActivity"
             android:label="@string/title_activity_separate_game"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SeparateTeamFromTableActivivty"
+            android:label="@string/title_activity_separate_team_from_table_activivty"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
