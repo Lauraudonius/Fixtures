@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import org.jsoup.select.Elements;
 
@@ -33,14 +34,15 @@ public class LeagueTablesActivity extends ListActivity {
         String html = getHTML(parser);
         String[] leagues = html.split("<li>");
         final List<String> leaguesUrlList = getAllThingsBetween("href=\"", "\" class=\"category-list__sub-link\"", html);
-        List<String> leaguesList = (getAllThingsBetween("list__sub-link\">", "</a>", html));
+        final List<String> leaguesList = (getAllThingsBetween("list__sub-link\">", "</a>", html));
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getListView().getContext(), android.R.layout.simple_list_item_1, leaguesList);
         getListView().setAdapter(adapter);
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
                 Intent i = new Intent(getApplicationContext(), LeagueTableActivity.class);
-                i.putExtra("LeagueName", leaguesUrlList.get(position));
+                i.putExtra("LeagueNameForLink", leaguesUrlList.get(position));
+                i.putExtra("LeagueName", leaguesList.get(position));
                 startActivity(i);
             }
         });

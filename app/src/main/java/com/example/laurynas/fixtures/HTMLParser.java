@@ -40,4 +40,7 @@ public class HTMLParser {
     public Elements getSeparateGameContent(){
         return result.select("div.match-head__switch-offset");
     }
+    public Elements getLeagueTableContent(){
+        return  result.select("div.standing-table");
+    }
 }
