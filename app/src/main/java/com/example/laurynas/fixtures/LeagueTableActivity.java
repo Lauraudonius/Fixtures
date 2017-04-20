@@ -99,7 +99,6 @@ public class LeagueTableActivity extends ListActivity {
                 form += s1 + "\n";
             }
             lastMatches.add(form);
-            System.out.println(numbers.size());
             singleRow singleRow = new singleRow(formatString(place + ". " + teamName, 16), formatString(numbers.get(0), 3), formatString(numbers.get(1), 3), formatString(numbers.get(2), 3), formatString(points, 3));
             singleRows.add(singleRow);
         }

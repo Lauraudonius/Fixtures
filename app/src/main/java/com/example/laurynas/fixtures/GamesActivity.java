@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
@@ -50,10 +51,10 @@ public class GamesActivity extends ListActivity {
         setName(name);
 
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
-        formatter.setTimeZone(TimeZone.getTimeZone("GMT+2"));
+        formatter.setTimeZone(TimeZone.getDefault());
         Date currentTime_1 = new Date();
         final String time = formatter.format(currentTime_1);
-
+        Toast.makeText(getApplicationContext(), time, Toast.LENGTH_SHORT).show();
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +103,13 @@ public class GamesActivity extends ListActivity {
                 if(times.size() == 1) game.setTime(String.valueOf(times.get(0)) + " ");
                 else game.setTime(String.valueOf(times.get(0)) + " ");
             }else if(compareDatesAndTimes(date1, date) == '>'){
-                if(times.size() == 1) game.setTime("(Full Time) " + String.valueOf(times.get(0)) + " ");
+                if(times.size() == 1){
+                    String hours = "";
+                    hours += times.get(0).charAt(0) + times.get(0).charAt(1);
+                    if(Integer.valueOf(hours) < 2){
+                        game.setTime("(Next day) " + String.valueOf(times.get(0)) + " ");
+                    }else game.setTime("(Full Time) " + String.valueOf(times.get(0)) + " ");
+                }
                 else game.setTime("(Full Time) ");
             }else{
                 if(times.size() == 1){
@@ -234,7 +241,11 @@ public class GamesActivity extends ListActivity {
             parts[1] = parts[1].replaceAll("[^\\d.]", "");
             h = Integer.parseInt(parts[0]);
             min = Integer.parseInt(parts[1]);
-            h += 2;
+            Calendar mCalendar = new GregorianCalendar();
+            TimeZone mTimeZone = mCalendar.getTimeZone();
+            int mGMTOffset = mTimeZone.getRawOffset() + (mTimeZone.inDaylightTime(new Date()) ? mTimeZone.getDSTSavings() : 0);
+            System.out.println(mGMTOffset/(60*60*100));
+            h += (mGMTOffset/(60*60*1000))-1;
             if(h > 23){
                 h -= 24;
             }
