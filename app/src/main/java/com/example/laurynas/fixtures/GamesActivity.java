@@ -54,7 +54,7 @@ public class GamesActivity extends ListActivity {
         formatter.setTimeZone(TimeZone.getDefault());
         Date currentTime_1 = new Date();
         final String time = formatter.format(currentTime_1);
-        Toast.makeText(getApplicationContext(), time, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), time, Toast.LENGTH_SHORT).show();
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -244,7 +244,7 @@ public class GamesActivity extends ListActivity {
             Calendar mCalendar = new GregorianCalendar();
             TimeZone mTimeZone = mCalendar.getTimeZone();
             int mGMTOffset = mTimeZone.getRawOffset() + (mTimeZone.inDaylightTime(new Date()) ? mTimeZone.getDSTSavings() : 0);
-            System.out.println(mGMTOffset/(60*60*100));
+            //System.out.println(mGMTOffset/(60*60*100));
             h += (mGMTOffset/(60*60*1000))-1;
             if(h > 23){
                 h -= 24;
@@ -301,7 +301,6 @@ public class GamesActivity extends ListActivity {
             parts[0] = parts[0].replaceAll("[^\\d.]", "");
             parts[1] = parts[1].replaceAll("[^\\d.]", "");
         */
-        System.out.println(now + " " + gameTime);
         String[] parts1 = now.split(":");
         String[] parts2 = gameTime.split(":");
         int h1 = Integer.parseInt(parts1[0].replaceAll("[^\\d.]", ""));
