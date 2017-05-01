@@ -26,4 +26,8 @@
     <string name="title_activity_separate_team_from_table_activivty">
         SeparateTeamFromTableActivivty
     </string>
+    <string name="title_activity_separate_game_extended">SeparateGameExtendedActivity</string>
+    <string name="title_activity_separate_team_extended_information">
+        SeparateTeamExtendedInformationActivity
+    </string>
 </resources>

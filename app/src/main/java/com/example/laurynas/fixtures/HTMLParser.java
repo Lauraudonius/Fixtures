@@ -28,6 +28,9 @@ public class HTMLParser {
     public Elements getContent() {
         return result.select("div.fixres.matches-block--large");
     }
+    public Elements getFixturesResultsContent() {
+        return result.select("div.fixres matches-block--large");
+    }
     public Elements getSeparateTeamsContent(){
         return result.select("div.page-nav__body");
     }
@@ -38,7 +41,7 @@ public class HTMLParser {
         return result.select("div.grid__col.site-layout-secondary__col1");
     }
     public Elements getSeparateGameContent(){
-        return result.select("div.match-head__switch-offset");
+        return result.select("div.site-wrapper");
     }
     public Elements getLeagueTableContent(){
         return  result.select("div.standing-table");

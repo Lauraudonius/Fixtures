@@ -1,6 +1,7 @@
 package com.example.laurynas.fixtures;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -19,11 +20,11 @@ import java.util.regex.Pattern;
 
 public class TeamActivity extends ListActivity {
 
+    String realName = "", name = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
-        String name="", realName = "";
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
             name = extras.getString("TeamName");
@@ -82,7 +83,18 @@ public class TeamActivity extends ListActivity {
     }
 
 
-
+    public void onResults(View view){
+        Intent i = new Intent(getApplicationContext(), SeparateTeamExtendedInformationActivity.class);
+        i.putExtra("Link", "http://www.skysports.com/football" + name + "-results");
+        i.putExtra("TeamName" , realName);
+        startActivity(i);
+    }
+    public void onFixtures(View view){
+        Intent i = new Intent(getApplicationContext(), SeparateTeamExtendedInformationActivity.class);
+        i.putExtra("Link", "http://www.skysports.com/football" + name + "-fixtures");
+        i.putExtra("TeamName" , realName);
+        startActivity(i);
+    }
     private List<String> getAllThingsBetween(String pat1, String pat2, String data){
         List<String> stringList = new ArrayList<String>();
         String regexString = Pattern.quote(pat1) + "(.*?)" + Pattern.quote(pat2);
