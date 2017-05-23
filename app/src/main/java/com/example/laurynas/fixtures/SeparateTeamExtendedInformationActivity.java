@@ -1,6 +1,7 @@
 package com.example.laurynas.fixtures;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,11 +11,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.jsoup.select.Elements;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,7 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 public class SeparateTeamExtendedInformationActivity extends ListActivity {
 
-    String link = "", teamName = "";
+    String link = "", teamName = "", type = "";
     HTMLParser htmlParser = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,7 @@ public class SeparateTeamExtendedInformationActivity extends ListActivity {
         setContentView(R.layout.activity_separate_team_extended_information);
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
+            type = extras.getString("Type");
             link = extras.getString("Link");
             teamName = extras.getString("TeamName");
         }
@@ -82,13 +87,20 @@ public class SeparateTeamExtendedInformationActivity extends ListActivity {
         return html;
     }
     public void afterWorkWIthUI(){
+        TextView textView = (TextView)findViewById(R.id.textView19);
+        if(link.contains("fixtures")){
+            textView.setText(teamName + "'s fixtures");
+        }else{
+            textView.setText(teamName + "'s results");
+        }
         String html = getHTML(htmlParser);
-        List<String> stringList = new ArrayList<>();
-        List<String> dates = getAllThingsBetween("<h4 class=\"fixres__header2\">", "</h4>", html);
-        List<String> tournaments = getAllThingsBetween("<h5 class=\"fixres__header3\">", "</h5", html);
-        List<String> times = getAllThingsBetween("<span class=\"matches__date\">", "</span>", html);
-        List<String> scores = getAllThingsBetween("<span class=\"matches__teamscores-side\">", "</span>", html);
-        List<String> teams = getAllThingsBetween("<span class=\"swap-text__target\">", "</span>", html);
+        final List<String> stringList = new ArrayList<>();
+        final List<String> dates = getAllThingsBetween("<h4 class=\"fixres__header2\">", "</h4>", html);
+        final List<String> links = getAllThingsBetween("<a href=\"", "\" class=\"matches__item matches__link\"", html);
+        final List<String> tournaments = getAllThingsBetween("<h5 class=\"fixres__header3\">", "</h5", html);
+        final List<String> times = getAllThingsBetween("<span class=\"matches__date\">", "</span>", html);
+        final List<String> scores = getAllThingsBetween("<span class=\"matches__teamscores-side\">", "</span>", html);
+        final List<String> teams = getAllThingsBetween("<span class=\"swap-text__target\">", "</span>", html);
         for(int i = 0;i < dates.size();i++){
             String fullString = "";
             fullString += tournaments.get(i) + "\n";
@@ -117,6 +129,23 @@ public class SeparateTeamExtendedInformationActivity extends ListActivity {
             }
         };
         getListView().setAdapter(arrayAdapter);
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
+                if(type == "Fixtures"){
+                    System.out.println(dates.get(position));
+                }else{
+                    if(links.size() > position) {
+                        Intent i = new Intent(getApplicationContext(), SeparateGameActivity.class);
+                        i.putExtra("link", links.get(position));
+                        String title = teams.get(position*2) + " - " + teams.get(position*2 + 1);
+                        i.putExtra("name", stringList.get(position));
+                        i.putExtra("teams", title);
+                        startActivity(i);
+                    }else Toast.makeText(getApplicationContext(), "Nothing about this game", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
     public String changeTime(String time){
         String temp;

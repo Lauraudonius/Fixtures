@@ -21,32 +21,22 @@ import java.util.regex.Pattern;
 
 public class SeparateGameExtendedActivity extends ListActivity {
 
-    String name, HTML;
+    String name, link;
+    HTMLParser htmlParser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_separate_game_extended);
         name="";
-        HTML = "";
+        link = "";
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
-            HTML = extras.getString("HTML");
+            link = extras.getString("Link");
             name = extras.getString("Name");
         }
         TextView textView = (TextView) findViewById(R.id.textView17);
-        textView.setText(name);
-        List<String> list = getAllThingsBetween("class=\"live-text__line", "/div>", HTML);
-        for(String s : list){
-            String time = "";
-            if(s.contains("full_time")){
-                time = "Full time";
-            }else time = getAllThingsBetween("class=\"live-text__time\">", "</time>", s).get(0);
-            String data = getAllThingsBetween("<p class=\"live-text__text\">", "</p>", s).get(0);
-            String full = "(" + time + ")" + data;
-            list.set(list.indexOf(s), full);
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getListView().getContext(), android.R.layout.simple_list_item_1, list);
-        getListView().setAdapter(adapter);
+        textView.setText("Loading more information about the game");
+        new HTMLoadTask().execute(link);
     }
     private List<String> getAllThingsBetween(String pat1, String pat2, String data){
         List<String> stringList = new ArrayList<String>();
@@ -60,15 +50,48 @@ public class SeparateGameExtendedActivity extends ListActivity {
         }
         return stringList;
     }
-    public String getHTML(HTMLParser realhtmlParser) {
-        String html = "";
-        if(realhtmlParser == null)System.out.println("NOOOOOOOOOOOOOOOOOOO");
-        Elements content = null;
-        while(true){if(realhtmlParser != null)break;}
-        content = realhtmlParser.getSeparateGameContent();
+    class HTMLoadTask extends AsyncTask<String, Void, HTMLParser> {
+        @Override
+        protected HTMLParser doInBackground(String... urls) {
+            HTMLParser parser = new HTMLParser();
+            parser.load(urls[0]);
+            return parser;
+        }
 
+        @Override
+        protected void onPostExecute(HTMLParser htmlParser) {
+            getThing(htmlParser);
+        }
+    }
+
+    private void getThing(HTMLParser htmlParser1) {
+        htmlParser = htmlParser1;
+        afterWorkWIthUI();
+    }
+    public String getHTML(HTMLParser htmlParser) {
+        String html = "";
+        Elements content = htmlParser.getSeparateGameExtendedContent();
         html += content.html();
         return html;
+    }
+    public void afterWorkWIthUI(){
+        String html = getHTML(htmlParser);
+        List<String> list = getAllThingsBetween("</div> ", "</div> ", html);
+        System.out.println(list.size());
+        System.out.println("HTML:" + html);
+        TextView textView = (TextView) findViewById(R.id.textView17);
+        textView.setText(name);
+        for(String s : list){
+            String time = "";
+            if(s.contains("full_time")){
+                time = "Full time";
+            }else time = getAllThingsBetween("class=\"live-text__time\">", "</time>", s).get(0);
+            String data = getAllThingsBetween("<p class=\"live-text__text\">", "</p>", s).get(0);
+            String full = "(" + time + ")" + data;
+            list.set(list.indexOf(s), full);
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getListView().getContext(), android.R.layout.simple_list_item_1, list);
+        getListView().setAdapter(adapter);
     }
 
 }

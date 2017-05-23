@@ -28,6 +28,9 @@ public class HTMLParser {
     public Elements getContent() {
         return result.select("div.fixres.matches-block--large");
     }
+    public Elements getSeparateGameExtendedContent() {
+        return result.select("div.live-text");
+    }
     public Elements getFixturesResultsContent() {
         return result.select("div.fixres matches-block--large");
     }

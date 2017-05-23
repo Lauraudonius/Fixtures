@@ -26,7 +26,7 @@ public class SeparateGameActivity extends AppCompatActivity {
 
     HTMLParser htmlParser;
     TextView textView;
-    String name, teamsFromIntent;
+    String name, teamsFromIntent, link;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +34,7 @@ public class SeparateGameActivity extends AppCompatActivity {
         Button button = (Button) findViewById(R.id.button3);
         button.setVisibility(View.GONE);
         setTextPositive();
-        String link="";
+        link="";
         name="";
         teamsFromIntent = "";
         Bundle extras = getIntent().getExtras();
@@ -158,16 +158,10 @@ public class SeparateGameActivity extends AppCompatActivity {
         littleTextView.setText(teams[0] + "\n___________________________\n" + teams[1]);
         checkForExtendedInfo(html);
     }
-    public String HTMLForMoreInfo = "";
     public void checkForExtendedInfo(String HTML){
-        System.out.println(HTML);
         Button button = (Button) findViewById(R.id.button3);
         if(HTML.contains("\"Live commentary\"")){
-            button.setVisibility(View.GONE);
-            if(getAllThingsBetween("<div class=\"page-nav callfn\" data-fn=\"page-nav\" data-lite=\"true\"> " ,"<p class=\"live-text__text\">", HTML).size() > 0) {
-                HTMLForMoreInfo = getAllThingsBetween("<div class=\"page-nav callfn\" data-fn=\"page-nav\" data-lite=\"true\"> ", "<p class=\"live-text__text\">", HTML).get(0);
-                System.out.println("LOLLLLLLLLLLZ" + HTMLForMoreInfo);
-            }
+            button.setVisibility(View.VISIBLE);
         }else{
             button.setVisibility(View.GONE);
         }
@@ -175,7 +169,7 @@ public class SeparateGameActivity extends AppCompatActivity {
 
     public void onClickMoreButton(View view){
         Intent i = new Intent(getApplicationContext(), SeparateGameExtendedActivity.class);
-        i.putExtra("HTML", HTMLForMoreInfo);
+        i.putExtra("Link", link);
         i.putExtra("Name", name);
         startActivity(i);
     }
