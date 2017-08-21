@@ -43,7 +43,7 @@ public class LeagueTableActivity extends ListActivity {
 
     static String formatString(String str, int places) {
         String newStr = "";
-        System.out.println(str);
+        //.out.println(str);
         for (int i = 0; i < places; i++) {
             if (i < str.length()) {
                 newStr += str.charAt(i);
@@ -81,24 +81,32 @@ public class LeagueTableActivity extends ListActivity {
         textView.setText(leagueName + " table");
         getListView().setVisibility(View.VISIBLE);
         String HTML = getHTML(htmlParser);
+        System.out.println(HTML);
         String[] HTMLforASingleTeam = HTML.split("<td class=\"standing-table__cell standing-table__cell--name");
         List<String> stringList = new ArrayList<String>(Arrays.asList(HTMLforASingleTeam));
         stringList.remove(0);
         HTMLforASingleTeam = stringList.toArray(new String[0]);
         List<singleRow> singleRows = new ArrayList<>();
+        final List<String> numbersForAllTeams = new ArrayList<>();
         final List<String> lastMatches = new ArrayList<>();
+        final List<String> teamNames = new ArrayList<>();
         for(String s : HTMLforASingleTeam){
-            System.out.println(s);
+            //System.out.println(s);
             String teamName = getAllThingsBetween("data-short-name=\"", "\" data-long-name=\"", s).get(0);
             List<String> numbers = getAllThingsBetween("<td class=\"standing-table__cell is-hidden--bp35\">", "</td>", s);
             List<String> placePoints = getAllThingsBetween("<td class=\"standing-table__cell\" data-sort-", "d>", s);
             String place = getAllThingsBetween("value=\"", "\">",placePoints.get(0)).get(0);
             String points = getAllThingsBetween("\">", "</t" , placePoints.get(0)).get(0);
+            String numbersForATeam = "";
+            for(String sass : numbers)numbersForATeam += sass + " ";
+            numbersForAllTeams.add(numbersForATeam);
+            System.out.println(numbersForATeam);
             String form = "";
             for(String s1 : getAllThingsBetween("<span title=\"", "\" class=\"standing-table__form", s)){
                 form += s1 + "\n";
             }
             lastMatches.add(form);
+            teamNames.add(teamName);
             singleRow singleRow = new singleRow(formatString(place + ". " + teamName, 16), formatString(numbers.get(0), 3), formatString(numbers.get(1), 3), formatString(numbers.get(2), 3), formatString(points, 3));
             singleRows.add(singleRow);
         }
@@ -111,8 +119,9 @@ public class LeagueTableActivity extends ListActivity {
             public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
                 if(position != 0) {
                     Intent i = new Intent(getApplicationContext(), SeparateTeamFromTableActivivty.class);
-                    i.putExtra("TeamName", singleRows1[position].getName());
+                    i.putExtra("TeamName", teamNames.get(position - 1));
                     i.putExtra("HTML", lastMatches.get(position - 1));
+                    i.putExtra("Numbers", numbersForAllTeams.get(position - 1));
                     startActivity(i);
                 }
             }
