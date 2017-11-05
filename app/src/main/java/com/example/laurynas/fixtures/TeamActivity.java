@@ -85,6 +85,7 @@ public class TeamActivity extends ListActivity {
 
     public void onResults(View view){
         Intent i = new Intent(getApplicationContext(), SeparateTeamExtendedInformationActivity.class);
+        i.putExtra("isLeague", "false");
         i.putExtra("Type", "Results");
         i.putExtra("Link", "http://www.skysports.com/football" + name + "-results");
         i.putExtra("TeamName" , realName);
@@ -92,6 +93,7 @@ public class TeamActivity extends ListActivity {
     }
     public void onFixtures(View view){
         Intent i = new Intent(getApplicationContext(), SeparateTeamExtendedInformationActivity.class);
+        i.putExtra("isLeague", "false");
         i.putExtra("Type", "Fixtures");
         i.putExtra("Link", "http://www.skysports.com/football" + name + "-fixtures");
         i.putExtra("TeamName" , realName);

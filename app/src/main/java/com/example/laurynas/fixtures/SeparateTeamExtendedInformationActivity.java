@@ -29,7 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 public class SeparateTeamExtendedInformationActivity extends ListActivity {
 
-    String link = "", teamName = "", type = "";
+    String isLeague = "", link = "", teamName = "", type = "";
     HTMLParser htmlParser = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +37,7 @@ public class SeparateTeamExtendedInformationActivity extends ListActivity {
         setContentView(R.layout.activity_separate_team_extended_information);
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
+            isLeague = extras.getString("isLeague");
             type = extras.getString("Type");
             link = extras.getString("Link");
             teamName = extras.getString("TeamName");
@@ -103,7 +104,9 @@ public class SeparateTeamExtendedInformationActivity extends ListActivity {
         final List<String> teams = getAllThingsBetween("<span class=\"swap-text__target\">", "</span>", html);
         for(int i = 0;i < dates.size();i++){
             String fullString = "";
-            fullString += tournaments.get(i) + "\n";
+            if(tournaments.size() != 0){
+                fullString += tournaments.get(i) + "\n";
+            }
             fullString += dates.get(i) + " " + changeTime(times.get(i)) + "\n";
             fullString += teams.get(2*i) + " ";
             if(link.contains("results")){
@@ -159,7 +162,7 @@ public class SeparateTeamExtendedInformationActivity extends ListActivity {
         TimeZone mTimeZone = mCalendar.getTimeZone();
         int mGMTOffset = mTimeZone.getRawOffset() + (mTimeZone.inDaylightTime(new Date()) ? mTimeZone.getDSTSavings() : 0);
         //System.out.println(mGMTOffset/(60*60*100));
-        h += (mGMTOffset/(60*60*1000))-1;
+        h += (mGMTOffset/(60*60*1000));
         if(h > 23){
             h -= 24;
         }

@@ -1,6 +1,8 @@
 package com.example.laurynas.fixtures;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LeagueTablesActivity extends ListActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +42,38 @@ public class LeagueTablesActivity extends ListActivity {
         getListView().setAdapter(adapter);
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
-                Intent i = new Intent(getApplicationContext(), LeagueTableActivity.class);
-                i.putExtra("LeagueNameForLink", leaguesUrlList.get(position));
-                i.putExtra("LeagueName", leaguesList.get(position));
-                startActivity(i);
+            public void onItemClick(AdapterView<?> arg0, View view, final int position, long arg3) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(LeagueTablesActivity.this);
+                String[] array = {"The table", "The fixtures", "The results", "Cancel"};
+                builder.setTitle("What do you want to see?")
+                        .setItems(array, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(which == 0){
+                                    Intent i = new Intent(getApplicationContext(), LeagueTableActivity.class);
+                                    i.putExtra("LeagueNameForLink", leaguesUrlList.get(position));
+                                    i.putExtra("LeagueName", leaguesList.get(position));
+                                    startActivity(i);
+                                }else if(which == 1){
+                                    Intent i = new Intent(getApplicationContext(), SeparateTeamExtendedInformationActivity.class);
+                                    i.putExtra("isLeague", "true");
+                                    i.putExtra("Type", "Fixtures");
+                                    i.putExtra("Link", "http://www.skysports.com" + leaguesUrlList.get(position) + "-fixtures");
+                                    i.putExtra("TeamName" , leaguesList.get(position));
+                                    startActivity(i);
+                                }else if(which == 2){
+                                    Intent i = new Intent(getApplicationContext(), SeparateTeamExtendedInformationActivity.class);
+                                    i.putExtra("isLeague", "true");
+                                    i.putExtra("Type", "Results");
+                                    i.putExtra("Link", "http://www.skysports.com" + leaguesUrlList.get(position) + "-results");
+                                    i.putExtra("TeamName" , leaguesList.get(position));
+                                    startActivity(i);
+                                }else if(which == 3){
+
+                                }
+                            }
+                        });
+
+                builder.create().show();
             }
         });
     }
