@@ -245,7 +245,7 @@ public class GamesActivity extends ListActivity {
             TimeZone mTimeZone = mCalendar.getTimeZone();
             int mGMTOffset = mTimeZone.getRawOffset() + (mTimeZone.inDaylightTime(new Date()) ? mTimeZone.getDSTSavings() : 0);
             //System.out.println(mGMTOffset/(60*60*100));
-            h += (mGMTOffset/(60*60*1000))-1;
+            h += (mGMTOffset/(60*60*1000));
             if(h > 23){
                 h -= 24;
             }
@@ -323,55 +323,7 @@ public class GamesActivity extends ListActivity {
         Toast.makeText(this, "Notification set for: "+ day +"/"+ (month+1) +"/"+ year, Toast.LENGTH_SHORT).show();
     }*/
 
-    /** Adds Events and Reminders in Calendar. */
-    private void addReminderInCalendar() {
-        Calendar cal = Calendar.getInstance();
-        Uri EVENTS_URI = Uri.parse(getCalendarUriBase(true) + "events");
-        ContentResolver cr = getContentResolver();
-        TimeZone timeZone = TimeZone.getDefault();
 
-        /** Inserting an event in calendar. */
-        ContentValues values = new ContentValues();
-        values.put(CalendarContract.Events.CALENDAR_ID, 1);
-        values.put(CalendarContract.Events.TITLE, "Sanjeev Reminder 01");
-        values.put(CalendarContract.Events.DESCRIPTION, "A test Reminder.");
-        values.put(CalendarContract.Events.ALL_DAY, 0);
-        values.put(CalendarContract.Events.RDATE, "20170123");
-        // event starts at 11 minutes from now
-        values.put(CalendarContract.Events.DTSTART, cal.getTimeInMillis());
-        // ends 60 minutes from now
-        values.put(CalendarContract.Events.DTEND, cal.getTimeInMillis() + 2*60*60*1000);
-        values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
-        values.put(CalendarContract.Events.HAS_ALARM, 1);
-        Uri event = cr.insert(EVENTS_URI, values);
-
-        // Display event id.
-        Toast.makeText(getApplicationContext(), "Event added :: ID :: " + event.getLastPathSegment(), Toast.LENGTH_SHORT).show();
-
-        /** Adding reminder for event added. */
-        Uri REMINDERS_URI = Uri.parse(getCalendarUriBase(true) + "reminders");
-        values = new ContentValues();
-        values.put(CalendarContract.Reminders.EVENT_ID, Long.parseLong(event.getLastPathSegment()));
-        values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
-        values.put(CalendarContract.Reminders.MINUTES, 10);
-        cr.insert(REMINDERS_URI, values);
-    }
-
-    /** Returns Calendar Base URI, supports both new and old OS. */
-    private String getCalendarUriBase(boolean eventUri) {
-        Uri calendarURI = null;
-        try {
-            if (android.os.Build.VERSION.SDK_INT <= 7) {
-                calendarURI = (eventUri) ? Uri.parse("content://calendar/") : Uri.parse("content://calendar/calendars");
-            } else {
-                calendarURI = (eventUri) ? Uri.parse("content://com.android.calendar/") : Uri
-                        .parse("content://com.android.calendar/calendars");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return calendarURI.toString();
-    }
 
     public void addCalendarEvent(String date, String title, String description){
         Date fulldate = null;
@@ -385,10 +337,7 @@ public class GamesActivity extends ListActivity {
         calintent.putExtra("title", title);
         calintent.putExtra("description", description);
         calintent.putExtra("beginTime",  fulldate.getTime());
-        calintent.putExtra("endTime",fulldate.getTime()+ 30*60*1000);
-
-
-
+        calintent.putExtra("endTime",fulldate.getTime()+ 90*60*1000);
         startActivity(calintent);
     }
 }
